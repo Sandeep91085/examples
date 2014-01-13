@@ -400,7 +400,7 @@ public class Quiz2 {
 //		reverseBit();
 //		reverse4MSbWithLSB();
 //		elementOccrMoreThann2Times();
-		setOfparenthesis();
+//		setOfparenthesis();
 	}
 	
 
