@@ -2,6 +2,7 @@ package examples;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,7 +11,10 @@ import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.concurrent.Exchanger;
 
+import com.sun.org.apache.bcel.internal.generic.IINC;
 import com.utility.Base;
+import com.utility.Node;
+import com.utility.QuizUtility;
 
 public class Quiz2 {
 
@@ -156,34 +160,27 @@ public class Quiz2 {
 		}
 	
 	
-	public static void printMatrixInDiagonal(int [][] arr, int m,int l){
+	public static void printMatrixInDiagonal(int [][] matrix){
 		
-		int i=1;
-		int j=0;
-		int n=0;
-		System.out.println(" "+arr[0][0]);
-		while(true){
-			j=n;
-			for(int k=i;j<=i;k--,j++){
-				System.out.print(" "+arr[k][j]);
-			}
+		int rows = matrix.length;
+		int cols = matrix[0].length;
+
+		for (int i = 0; i < cols; i++) {
+			int c = i;
+			for (int j = 0; (c >=0 && j < rows); c--, j++)
+				System.out.print(matrix[j][c] + "  ");
+
 			System.out.println("");
-			if(i<m-1){
-				i++;
-				j=n;
-			}
-			else{
-				n++;
-			}
-			if(i==l-1)
-				break;
 		}
-		
-		
-		
-		
+
+		for (int j = 1; j < rows; j++) {
+			int r = j;
+			for (int i = cols-1; (i >= 0 && r < rows); i--, r++)
+				System.out.print(matrix[r][i] + "  ");
+
+			System.out.println("");
+		}
 	}
-	
 	
 	public static void setOfNuDifferenceK(){
 		
@@ -229,7 +226,7 @@ public class Quiz2 {
 	
 	public static void findAllTripletsInAscendingOrder(){
 		
-		
+		 
 		int arr[] ={1,1,5,4,3,6,6,5,9,10};
 		//Arrays.sort(arr);
 		int len =arr.length;
@@ -379,19 +376,453 @@ public class Quiz2 {
 		}
 	}
 	
+	public static void swapMatrixColumn(int mat[][],int rows,int col){
+	
+		int temp=0;
+		for(int i=0;i<=rows-1;i++){
+			for(int j=i;j<=col-1;j++){
+				temp = mat[i][j];
+				mat[i][j] = mat[i][col-1-j];
+				mat[i][col-1-j] = temp;
+				break;
+			}
+		}
+		
+		/*for(int i=rows/2;i<=rows-1;i++){
+			for(int j=i;j<=col-1;j++){
+				mat[i][j] = 
+			}
+		}*/
+		
+		System.out.println("matrix "+mat);
+	}
+	
+	
+	public static void rotateMatrix90(int arr[][]){
+		
+		int r = arr.length-1;
+		int c = arr[0].length-1;
+		int temp=-1;
+		
+		for(int i=0; i<(r+1)/2; i++){
+			for(int j=i;j<c-i;j++){
+				
+				temp = arr[i][j];
+				
+				// top <- left
+				arr[i][j] = arr[r-j][i];
+				
+				// left <- bottom
+				arr[r-j][i] = arr[r-i][c-j];
+				
+				// bottom <- right
+				arr[r-i][c-j] = arr[j][c-i];
+				
+				// right
+				arr[j][c-i] = temp;
+			}
+		}
+		
+		System.out.println(" matrix "+arr);
+		
+	}
+	
+	private static int index=0;
+	public static void checkRegularExpression(String regEx , String input){
+		
+		boolean match = true;
+		int r=0;
+		char c = '\0';
+		while(r<regEx.length()-1){
+			
+			c = regEx.charAt(r);
+			if(c=='*'){
+				if(!checkAstrik(regEx,input,r))
+					break;
+				else
+					r++;
+			}
+			else if(c=='.'){
+				if(regEx.charAt(r+1)=='*'){
+					checkDotAstrik(regEx, input, r+1);
+					r = r+2;
+				}else{
+					checkDot(regEx, input, r);
+					r++;
+				}
+			}else{
+				if(compareChar(regEx,input,r)){
+					r++;
+					index++;
+				}else
+					break;
+			}
+			r++;
+		}
+		
+		System.out.println(" Result: "+(match?true:false));
+	}
+	
+	public static boolean checkAstrik( String regEx,String input,int start){
+		
+		char prev = regEx.charAt(start-1);
+		while(input.charAt(index) == prev){
+			index++;
+		}
+
+		return true;
+	}
+	
+	public static boolean checkDot(String regEx,String input,int start){
+		
+		while(regEx.charAt(start+1) != input.charAt(index++));
+		
+		return true;
+	}
+	
+	public static boolean checkDotAstrik(String regEx,String input,int start){
+		
+		char next = regEx.charAt(start+1);
+		while(next != input.charAt(index++));
+		
+		return true;
+	}
+	
+	public static boolean compareChar(String regEx,String input,int start){
+		
+		if(regEx.charAt(start) == input.charAt(index))
+			return true;
+		else if(regEx.charAt(start+1) == '*')
+			return true;
+		return false;
+	}
+	
+	public static void dictonaryMatching(){
+		
+		ArrayList<String> dic = new ArrayList<String>();
+		dic.add("samsung");
+		dic.add("galaxy");
+		dic.add("tab");
+		dic.add("sam");
+		String inp = "samsunggalaxytab";
+		boolean match[] = new boolean[inp.length()+1];
+		
+		match[0] = true;
+		for(int i=1;i<=inp.length();i++){
+			for(int k=0;k<=i;k++){
+				if(match[k] && dic.contains(inp.substring(k, i))){
+					match[i] = true;
+				}
+			}
+		}
+		
+		if(match[inp.length()]){
+			System.out.println("Match found ");
+		}else
+			System.out.println("Not match");
+		
+	}
+	public static void allStringCombination(String prefix,String inp){
+	
+		
+		int n = inp.length();
+		if(n<=0)
+			System.out.print(" "+prefix);
+		else{
+			for(int i=0;i<n;i++){
+				allStringCombination(prefix + inp.charAt(i), inp.substring(0, i)+inp.substring(i+1, n));
+			}
+		}
+			
+		
+	}
+	
+	public static void uniquePartiotionOfInteger(int a){
+		
+		int arr[] = new int[a+1];
+		System.out.println(a);
+		genunique(arr, 0, a);
+	}
+	
+	public static void getuniquePartitionOfInteger(int a){
+		
+		int p[] = new int[a]; // An array to store a partition
+	    int k = 0;  // Index of last element in a partition
+	    p[k] = a;  // Initialize first partition as number itself
+	 
+	    // This loop first prints current partition, then generates next
+	    // partition. The loop stops when the current partition has all 1s
+	    while (true)
+	    {
+	        // print current partition
+	        printArray(p, k+1);
+	        // Generate next partition
+	        // Find the rightmost non-one value in p[]. Also, update the
+	        // rem_val so that we know how much value can be accommodated
+	        int rem_val = 0;
+	        while (k >= 0 && p[k] == 1)
+	        {
+	            rem_val += p[k];
+	            k--;
+	        }
+	        // if k < 0, all the values are 1 so there are no more partitions
+	        if (k < 0)  return;
+	        // Decrease the p[k] found above and adjust the rem_val
+	        p[k]--;
+	        rem_val++;
+	        // If rem_val is more, then the sorted order is violeted.  Divide
+	        // rem_val in differnt values of size p[k] and copy these values at
+	        // different positions after p[k]
+	        while (rem_val > p[k])
+	        {
+	            p[k+1] = p[k];
+	            rem_val = rem_val - p[k];
+	            k++;
+	        }
+	        // Copy rem_val to next position and increment position
+	        p[k+1] = rem_val;
+	        k++;
+	    }
+	}
+	
+	public static void printArray(int a[] , int k){
+		for(int i=0;i<k;i++){
+			System.out.print(a[i]);
+		}
+		System.out.println("");
+	}
+	
+	public static void genunique(int arr[],int i,int a){
+		
+		if(i==a || arr[i]==1)
+			return;
+		arr[i]=1;
+		arr[i+1]=a-(i+1);
+		for(int j=0;j<=i+1;j++)
+			System.out.print(arr[j]);
+		System.out.println();
+		genunique(arr, i+1, a);
+	}
+	
+	public static void sumOf2int(int x,int y){
+		int carry =0;
+		while(y!=0){
+			carry = x&y;
+			x = x^y;
+			y = carry<<1;
+			
+		}
+		System.out.println("Sum "+x);
+	}
+	
+	public static Node sumOfTwoLinkedList(Node list1 , Node list2, Node resultList, Node carry){
+		
+		if(list1==null)
+			return resultList = list2;
+		if(list2==null)
+			return resultList = list1;
+		int size1 = QuizUtility.getListSize(list1);
+		int size2 = QuizUtility.getListSize(list2);
+
+		if(size1 == size2){
+			resultList = QuizUtility.addSameLengthList(list1,list2,resultList,carry);
+		}else{
+			if(size1<size2){
+				//swap the linked list
+			}
+			
+			int diff = size1-size2;
+			Node currNode = null;
+			for(currNode = list1;diff>=0;diff--)
+				currNode = currNode.next;
+			
+			resultList = QuizUtility.addSameLengthList(currNode, list2, resultList, carry);
+			QuizUtility.addCarryToRemainingList(list1,currNode,resultList,carry);
+			
+		}
+		
+		
+		if(carry.data>0){
+			Node temNode = new Node(carry.data);
+			temNode.next = resultList;
+			resultList = temNode;
+		}
+		return resultList;
+	}
+	
+	static char arrc[]= new char[50];
+	public static void printPairOfAllParenthesis(int n,int open,int close,String res,int pos){
+		
+		
+		if (close == n) {
+//			System.out.println(" " + res);
+			for(char c : arrc)
+				System.out.print(""+c);
+			System.out.println("");
+			return;
+		}
+		if (open > close) {
+			res = res + "}";
+			arrc[pos]= '}';
+			printPairOfAllParenthesis(n, open, close + 1, res,pos+1);
+		}
+		if (open < n) {
+			res = res + "{";
+			arrc[pos]='{';
+			printPairOfAllParenthesis(n, open + 1, close, res,pos+1);
+		}
+		
+	}
+	
+	
+	public static void factorialOfBigInt(){
+		
+		
+		int n =20;
+		String res="1";
+		 while(n>=1){
+			 res = getProductOfStringInt(res, n);
+			 n= n-1;
+			 
+		 }
+		System.out.println("factorial "+res);
+		
+	}
+	
+	public static String getProductOfStringInt(String inp,int mul){
+		String res ="";
+		char arrInp[] = inp.toCharArray();
+		int strLen = arrInp.length-1;
+		int carry = 0;
+		int digit=0;
+		for(int i=strLen;i>=0;i--){
+			digit = Integer.parseInt(arrInp[i]+"");
+			digit = digit*mul + carry;
+			carry = digit/10;
+			digit = digit % 10;
+			arrInp[i] = Character.forDigit(digit, 10);
+		}
+		
+		res = new String(arrInp);
+		if(carry>0){
+			res = carry + res ;
+		}
+		//System.out.println("res "+res);
+		
+		return res;
+	}
+
+	public static void reverseString(){
+		
+		
+		char[] arr={'h','e','l','l','o', ' ','h','o','w',' ','a','r','e', ' ','y','o','u'};
+		
+		int i=0;
+		int j=0;
+		int len = arr.length-1;
+		j= len;
+		char temp = 's';
+		while(i<=j){
+			temp = arr[i];
+			arr[i] = arr[j];
+			arr[j] = temp;
+			i++;
+			j--;
+			
+			
+		}
+		int k=0;
+		j=0;
+		for(i=0;i<len;i++){
+			if(arr[i]==' '){
+				 k=i-1;
+				while(j<k){
+					temp = arr[k];
+					arr[k] = arr[j];
+					arr[j] = temp;
+					k--;
+					j++;
+				}
+				j=i+1;
+			}	
+		}
+		
+		k=len;
+		while(j<len){
+
+			temp = arr[k];
+			arr[k] = arr[j];
+			arr[j] = temp;
+			k--;
+			j++;
+		
+		}
+		
+		System.out.println(" result "+arr.toString());
+		
+		for(i=0;i<len+1;i++){
+			System.out.print(arr[i]);
+		}		
+		
+	}
+	
+	static int pathCount=0;
+	public static int  printAllPathOfMatrix(int arr[][],int m,int n){
+	
+		
+		int count[][] = new int[m][n];
+		
+		for(int i=0;i<m;i++){
+			if(arr[i][0]==0)
+				count[i][0]=0;
+			else
+				count[i][0]=1;
+		}
+		
+		for(int j=0;j<n;j++){
+			if(arr[0][j]==0)
+				count[0][j]=0;
+			else
+				count[0][j]=1;
+		}
+		
+		for(int i=1;i<m;i++){
+			for(int j=1;j<n;j++){
+				if(arr[i][j]==0){
+					count[i][j]=0;
+					
+				}else
+					count[i][j] = count[i-1][j]+count[i][j-1];
+			}
+		}
+		return count[m-1][n-1];
+		/*if(arr[m-1][n-1]==0)
+			return 0;
+		if(m==1 || n==1)
+			return 1;
+		
+		
+		return printAllPathOfMatrix(arr, m-1, n) + printAllPathOfMatrix(arr,m, n-1);
+*/		
+	}
+	
+	
+	
 	public static void main(String[] args) {
 		
 		
 		int arr[] = {1,2,3,4,5};
 		int unsortedArray[] = {3,10,1};
-		int arr2d[][] = {{1,2,3,10},{4,5,6,11},{7,8,9,12}};
+		int arr2d[][] = {{1,2,3,10},{4,5,6,11},{7,8,9,12}/*,{72,82,92,122}*/};
+		//int mat[][] = {{1,2,3,4,5},{6,7,8,9,10},{11,12,13,14,15},{16,17,18,19,20},{21,22,23,24,25}};
+		int mat[][] = {{1,2,0},{6,0,2},{2,12,13}};
 		//printAllCombination(arr, 4, 0, arr.length-1);
 		//Base b = new Base();
 		//heapSort(unsortedArray);
 			
 		//getNonRepeatingEle();
 		
-//		printMatrixInDiagonal(arr2d, 3,4);
+//		printMatrixInDiagonal(arr2d);
 		
 		//setOfNuDifferenceK();
 //		setOfnuDifferenceKBinary();
@@ -401,8 +832,23 @@ public class Quiz2 {
 //		reverse4MSbWithLSB();
 //		elementOccrMoreThann2Times();
 //		setOfparenthesis();
+//		swapMatrixColumn(mat, 5, 5);
+		//rotateMatrix90(mat);
+		
+		//dictonaryMatching();
+//		allStringCombination("", "abc");
+		//uniquePartiotionOfInteger(4);
+//		getuniquePartitionOfInteger(5);
+		
+		//printPairOfAllParenthesis(2, 0, 0,"",0);
+		
+		//factorialOfBigInt();
+		//reverseString();
+		
+		
+		System.out.println("path "+printAllPathOfMatrix(mat,3, 3));
 	}
 	
-
+	
 	}
 

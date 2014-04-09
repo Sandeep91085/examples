@@ -16,7 +16,7 @@ public class Quiz {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		int arr3[] = {15,18,20,22,27,0,1,2,3,4,5,6,7,8};
+		int arr3[] = {5,6,1,3};
 		//fibbonacci(8);
 		//System.out.println(" "+fibonacciRec(8));
 		//int arr[] = {-2,1,-3,4,-1,2,1,-5,4};
@@ -55,12 +55,12 @@ public class Quiz {
 		//printPrime(15);
 		
 //		maxDiffrenceSoFar(arr);
-		minDiffrence();
+//		minDiffrence();
 		//atoi("123458976");
 		//mergeSort(arr1, arr2);
 	
 		//test();
-		//System.out.println("BinarySearchOnRotatedArray "+BinarySearchOnRotatedArray(arr3, 0, arr3.length-1,3));
+		System.out.println("BinarySearchOnRotatedArray "+BinarySearchOnRotatedArray(arr3, 0, arr3.length-1,3));
 		//System.out.println("Elemet found at "+binarySearch(arr3, 0, arr3.length-1, 18));
 //		removingAdjacentDuplicates();
 		//mergeSort();
